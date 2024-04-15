@@ -2,14 +2,10 @@ absl-py==0.12.0
 astor==0.8.1
 awscli==1.19.16
 botocore==1.20.16
-boundaries==0.0.0
 cached-property==1.5.2
 certifi==2021.5.30
 chardet==3.0.4
-cpools==0.0.0
-cudnn-convolution==0.0.0
 cycler==0.10.0
-dynamic-mem==0.0.0
 gast==0.2.2
 google-pasta==0.2.0
 grpcio==1.38.0
