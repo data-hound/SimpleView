@@ -229,31 +229,6 @@ def distribute_img_fea_points(img_fea, point_coord):
         index=point_coord.long())
     point_fea = mask_point_coord.unsqueeze(-1) * point_fea
     return point_fea
-
-class custom_PCVIews(PCViews):
-    """Inherit PCViews class but with a different init function that can take custom view information.
-    Example:
-            [[0 * np.pi / 2, 0, np.pi / 2],
-            [1 * np.pi / 2, 0, np.pi / 2],
-            [2 * np.pi / 2, 0, np.pi / 2],
-            [3 * np.pi / 2, 0, np.pi / 2],
-            [0, -np.pi / 2, np.pi / 2],
-            [0, np.pi / 2, np.pi / 2]]
-    """
-    def __init__(self, angles):
-        """
-        angles should be [alpha_x, alpha_y, alpha_z] in that order
-        """
-        super().__init__()
-        _views_ = []
-        for angle in angles:
-            _views_.append([angle, [0, 0, TRANS]])
-        _views = np.array(_views_)
-        self.num_views = len(angles)
-        angle = torch.tensor(_views[:, 0, :]).float()
-        self.rot_mat = euler2mat(angle).transpose(1, 2)
-        self.translation = torch.tensor(_views[:, 1, :]).float()
-        self.translation = self.translation.unsqueeze(1)
             
 
 class PCViews:
@@ -315,3 +290,28 @@ class PCViews:
         points = torch.matmul(points, rot_mat)
         points = points - translation
         return points
+        
+class custom_PCViews(PCViews):
+    """Inherit PCViews class but with a different init function that can take custom view information.
+    Example:
+            [[0 * np.pi / 2, 0, np.pi / 2],
+            [1 * np.pi / 2, 0, np.pi / 2],
+            [2 * np.pi / 2, 0, np.pi / 2],
+            [3 * np.pi / 2, 0, np.pi / 2],
+            [0, -np.pi / 2, np.pi / 2],
+            [0, np.pi / 2, np.pi / 2]]
+    """
+    def __init__(self, angles):
+        """
+        angles should be [alpha_x, alpha_y, alpha_z] in that order
+        """
+        super().__init__()
+        _views_ = []
+        for angle in angles:
+            _views_.append([angle, [0, 0, TRANS]])
+        _views = np.array(_views_)
+        self.num_views = len(angles)
+        angle = torch.tensor(_views[:, 0, :]).float()
+        self.rot_mat = euler2mat(angle).transpose(1, 2)
+        self.translation = torch.tensor(_views[:, 1, :]).float()
+        self.translation = self.translation.unsqueeze(1)
