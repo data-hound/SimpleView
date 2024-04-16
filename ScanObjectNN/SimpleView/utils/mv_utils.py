@@ -250,7 +250,7 @@ class PCViews:
         self.translation = torch.tensor(_views[:, 1, :]).float()
         self.translation = self.translation.unsqueeze(1)
 
-    def get_img(self, points, size=1):
+    def get_img(self, points, size=1, resolution_ = RESOLUTION):
         """Get image based on the prespecified specifications.
 
         Args:
@@ -271,8 +271,8 @@ class PCViews:
 
         img = points2depth(
             points=_points,
-            image_height=RESOLUTION,
-            image_width=RESOLUTION,
+            image_height=resolution_,
+            image_width=resolution_,
             size_x=size,
             size_y=size,
         )
@@ -301,14 +301,28 @@ class custom_PCViews(PCViews):
             [0, -np.pi / 2, np.pi / 2],
             [0, np.pi / 2, np.pi / 2]]
     """
-    def __init__(self, angles):
+    def __init__(self, angles, trans_=TRANS):
         """
         angles should be [alpha_x, alpha_y, alpha_z] in that order
         """
         super().__init__()
         _views_ = []
         for angle in angles:
-            _views_.append([angle, [0, 0, TRANS]])
+            _views_.append([angle, [0, 0, trans_]])
+        _views = np.array(_views_)
+        self.num_views = len(angles)
+        angle = torch.tensor(_views[:, 0, :]).float()
+        self.rot_mat = euler2mat(angle).transpose(1, 2)
+        self.translation = torch.tensor(_views[:, 1, :]).float()
+        self.translation = self.translation.unsqueeze(1)
+
+    def update_views(self, angle, trans_):
+        """
+        Adjust the camera views if needed and compute the projection matrices
+        """
+        _views_ = []
+        for angle in angles:
+            _views_.append([angle, [0, 0, trans_]])
         _views = np.array(_views_)
         self.num_views = len(angles)
         angle = torch.tensor(_views[:, 0, :]).float()
