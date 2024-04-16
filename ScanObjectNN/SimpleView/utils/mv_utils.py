@@ -316,7 +316,7 @@ class custom_PCViews(PCViews):
         self.translation = torch.tensor(_views[:, 1, :]).float()
         self.translation = self.translation.unsqueeze(1)
 
-    def update_views(self, angles, trans_):
+    def update_views(self, angles, trans_=TRANS):
         """
         Adjust the camera views if needed and compute the projection matrices
         """
